@@ -6,6 +6,8 @@ const c = config.dev;
 //Configure AWS
 if(c.aws_profile !== "DEPLOYED") {
   var credentials = new AWS.SharedIniFileCredentials({profile: 'default'});
+  console.log(credentials);
+  console.log("TEAKJRFLAJDLAKJD");
   AWS.config.credentials = credentials;
 }
 
@@ -44,7 +46,7 @@ export function getGetSignedUrl( key: string ): string{
 export function getPutSignedUrl( key: string ){
 
     const signedUrlExpireSeconds = 60 * 5
-
+    console.log("test: " + c.aws_media_bucket);
     const url = s3.getSignedUrl('putObject', {
       Bucket: c.aws_media_bucket,
       Key: key,

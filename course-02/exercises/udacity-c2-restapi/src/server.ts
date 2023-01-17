@@ -1,5 +1,5 @@
 require('dotenv').config({ debug: true })
-console.log(process.env) // remove this after you've confirmed it is working
+//console.log(process.env) // remove this after you've confirmed it is working
 
 import express from 'express';
 import { sequelize } from './sequelize';
