@@ -16,24 +16,49 @@ router.get('/', async (req: Request, res: Response) => {
     res.send(items);
 });
 
+router.get('/:id', async( req: Request, res: Response) => {
+    let itemID = req.params.id;
+    const item = await FeedItem.findByPk(itemID);
+    console.log("Item ID: " + itemID);
+    if(!item) {
+        res.status(404).send("Not found!");
+    } else {
+        res.status(200).send(item);
+    }
+})
+
 //@TODO
 //Add an endpoint to GET a specific resource by Primary Key
 
 // update a specific resource
 router.patch('/:id', 
-    requireAuth, 
+    //requireAuth, 
     async (req: Request, res: Response) => {
         //@TODO try it yourself
-        res.status(500).send("not implemented")
+        let itemID = req.params.id;
+        let bodyUpdate = req.body;
+        console.log();
+        const itemToUpdate = await FeedItem.findByPk(itemID);
+        if(!itemToUpdate) {
+            res.status(404).send("Item doesn't exist");
+        }
+        await FeedItem.upsert({
+            id: itemID,
+            caption: bodyUpdate.caption
+        })
+        //id, caption, url
+        res.status(500).send("not implemented");
 });
 
 
 // Get a signed url to put a new item in the bucket
 router.get('/signed-url/:fileName', 
-    requireAuth, 
+    //requireAuth, 
     async (req: Request, res: Response) => {
     let { fileName } = req.params;
+    console.log("File name: " + fileName);
     const url = AWS.getPutSignedUrl(fileName);
+    console.log("url: " + process.env.AWS_MEDIA_BUCKET);
     res.status(201).send({url: url});
 });
 
@@ -41,7 +66,7 @@ router.get('/signed-url/:fileName',
 // NOTE the file name is they key name in the s3 bucket.
 // body : {caption: string, fileName: string};
 router.post('/', 
-    requireAuth, 
+   // requireAuth, 
     async (req: Request, res: Response) => {
     const caption = req.body.caption;
     const fileName = req.body.url;
